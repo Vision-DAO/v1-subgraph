@@ -23,6 +23,7 @@ dataSources:
           eventHandlers:
             - event: IdeaCreated(address)
               handler: handleIdeaCreated
+          file: ./src/mappings/factory.ts
 templates:
   - name: Idea
     kind: ethereum/contract
