@@ -5,49 +5,69 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Idea
+        name: Factory
+        network: mumbai
+        source:
+          address: "0x9456FE839E13B822dd8aDCFD65f5632e22756925"
+          abi: Factory
+          startBlock: 27802787
+        mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+            - Registry
+          abis:
+            - name: Factory
+              file: ./value-tree/build/contracts/Factory.json
+          eventHandlers:
+            - event: IdeaCreated(address)
+              handler: handleIdeaCreated
+templates:
+  - name: Idea
+    kind: ethereum/contract
     network: mumbai
     source:
       abi: Idea
-      startBlock: 27802787
+      startBlock: 27805420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Idea
+            - Idea
       abis:
-        - name: Idea
-          file: ./value-tree/build/contracts/Idea.json
+            - name: Idea
+              file: ./value-tree/build/contracts/Idea.json
       eventHandlers:
-        - event: IdeaRecorded(string)
-          handler: handleIdeaRecorded
-        - event: IdeaFunded(address, FundingRate)
-          handler: handleIdeaFunded
-        - event: ProposalRejected(address)
-          handler: handleProposalRejected
-        - event: FundingDispersed(address, FundingRate)
-          handler: handleFundingDispersed
+            - event: IdeaRecorded(string)
+              handler: handleIdeaRecorded
+            - event: IdeaFunded(address, FundingRate)
+              handler: handleIdeaFunded
+            - event: ProposalRejected(address)
+              handler: handleProposalRejected
+            - event: FundingDispersed(address, FundingRate)
+              handler: handleFundingDispersed
       file: ./src/mappings/idea.ts
-  - kind: ethereum/contract
-    name: Proposal
+  - name: Proposal
+    kind: ethereum/contract
     network: mumbai
     source:
       abi: Proposal
-      startBlock: 27802787
+      startBlock: 27805420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Proposal
+            - Proposal
       abis:
-        - name: Proposal
-          file: ./value-tree/build/contracts/Prop.json
-        eventHandlers:
-          - event: NewProposal(Idea, address, string, uint256)
-            handler: handleNewProposal
-        callHandlers:
-          - function: vote(uint256, FundingRate)
-            handler: handleVote
-        file: ./src/mappings/prop.ts
+            - name: Proposal
+              file: ./value-tree/build/contracts/Prop.json
+      eventHandlers:
+        - event: NewProposal(Idea, address, string, uint256)
+                    handler: handleNewProposal
+      callHandlers:
+        - function: vote(uint256, FundingRate)
+          handler: handleVote
+      file: ./src/mappings/prop.ts
