@@ -6,8 +6,32 @@
 
 This repository implements a The Graph subgraph for Vision V1 smart contracts on the Polygon mumbai testnet. It depends on the Vision V1 smart contracts, which are obtained from the [[https://github.com/Vision-DAO/value-tree][value tree repo]].
 
-** Tasklist
+** TODO Tasklist [0/4]
 
 *** TODO ~./subgraph.yaml~ Subgraph Manifest
 
 *** TODO ~./schema.graphql~ Subgraph Schema
+
+*** TODO ~./src/mappings.ts~ Subgraph Mappings [0/2]
+
+**** TODO Idea
+
+***** TODO Events [0/4]
+
+****** TODO ~handleIdeaRecorded~
+
+****** TODO ~handleIdeaFunded~
+
+****** TODO ~handleProposalRejected~
+
+****** TODO ~handleFundingDispersed~
+
+**** TODO Proposal [0/2]
+
+***** TODO Events [0/1]
+
+****** TODO ~handleNewProposal~
+
+***** TODO Calls [0/1]
+
+****** TODO ~handleVote~
