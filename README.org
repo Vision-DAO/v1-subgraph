@@ -1,0 +1,13 @@
+#+NAME: Vision V1 Subgraph
+#+DATE: 08/27/2022
+#+AUTHOR: Dowland Aiello
+
+* Vision V1 Subgraph
+
+This repository implements a The Graph subgraph for Vision V1 smart contracts on the Polygon mumbai testnet. It depends on the Vision V1 smart contracts, which are obtained from the [[https://github.com/Vision-DAO/value-tree][value tree repo]].
+
+** Tasklist
+
+*** TODO ~./subgraph.yaml~ Subgraph Manifest
+
+*** TODO ~./schema.graphql~ Subgraph Schema
