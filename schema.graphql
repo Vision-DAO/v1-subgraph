@@ -1,92 +1,120 @@
 "List of Ideas that have been created via the Vision UI"
 type Registry @entity {
-	ideas: [Idea!]!
+  ideas: [Idea!]!
 }
 
 type Idea @entity {
-	ipfsAddr: String!
+  ipfsAddr: String!
 
-	"DAO's funded by this Idea"
-	children: [Idea!]!
+  "DAO's funded by this Idea"
+  children: [Idea!]!
 
-	"Ways in which the project is receiving funding"
-	parents: [Prop!]!
+  "Ways in which the project is receiving funding"
+  parents: [Prop!]!
+
+  "Records of the ways people have interacted with this DAO"
+  users: [UserProfile!]!
 }
 
 type Prop @entity {
-	funder: Idea!
+  funder: Idea!
 
-	"The Ethereum address to which funds are sent"
-	toFund: Bytes!
-	rate: FundingRate!
+  "The Ethereum address to which funds are sent"
+  toFund: Bytes!
+  rate: FundingRate!
 
-	votes: [Vote!]!
-	voters: [User!]!
+  votes: [Vote!]!
+  voters: [User!]!
 
-	ipfsAddr: String!
-	title: String!
+  ipfsAddr: String!
+  title: String!
 
-	"UNIX timestamp for when the prop expires"
-	expiration: BigInt!
+  "UNIX timestamp for when the prop expires"
+  expiration: BigInt!
 }
 
 "A snapshot of the proposal being voted on, and the vote cast."
 type Vote @entity {
-	"The number of votes cast"
-	votes: BigInt!
+  "The number of votes cast"
+  votes: BigInt!
 
-	"The details of the user's vote"
-	rate: FundingRate!
+  "The details of the user's vote"
+  rate: FundingRate!
 
-	"The proposal being voted on"
-	prop: Prop!
+  "The proposal being voted on"
+  prop: Prop!
 }
 
 "How a project is funded"
 enum FundingType {
-	Treasury,
-	Mint,
+  Treasury,
+  Mint,
 }
 
 "A designation of the kind of funding a project receives"
 type FundingRate @entity {
-	"The ERC-20 token used to fund the project"
-	token: Bytes!
+  "The ERC-20 token used to fund the project"
+  token: Bytes!
 
-	"The number of tokens to send in total"
-	value: BigInt!
+  "The number of tokens to send in total"
+  value: BigInt!
 
-	"How oftne tokens should be sent"
-	intervalLength: BigInt!
+  "How oftne tokens should be sent"
+  intervalLength: BigInt!
 
-	"Timestamp for when the funding dries up"
-	expiry: BigInt!
+  "Timestamp for when the funding dries up"
+  expiry: BigInt!
 
-	"When the funding was last used"
-	lastClaimed: BigInt!
+  "When the funding was last used"
+  lastClaimed: BigInt!
 
-	"Whether tokens are sent or minted"
-	kind: FundingType
+  "Whether tokens are sent or minted"
+  kind: FundingType
 }
 
 "A participate on the Vision network"
 type User @entity {
-	"The ideas the user owns"
-	ideas: [Idea!]!
+  "The ideas the user participated in somehow"
+  ideas: [UserProfile!]!
+}
 
-	"Proposals the user created"
-	propsAuthored: [Prop!]!
+"A participant in a specific DAO"
+type UserProfile @entity {
+  "The index of the user among all users of the DAO"
+  id: BigInt!
 
-	"Times the user voted, and on which projects"
-	profiles: [VoterProfile!]!
+  dao: Idea!
+  user: User!
+
+  "Proposals the user created"
+  props: AuthorProfile!
+
+  "Times the user voted, and on which projects"
+  votes: VoterProfile!
+
+  "Tokens the user owns"
+  tokens: InvestorProfile!
 }
 
 "A record of the votes cast by the user for a particular DAO"
 type VoterProfile @entity {
-	user: User!
-	dao: Idea!
+  user: User!
+  dao: Idea!
 
-	"Their actual voting record"
-	votes: [Vote!]!
+  "Their actual voting record"
+  votes: [Vote!]!
 }
 
+"A record of the number of tokens owned by a user in an idea"
+type InvestorProfile @entity {
+  user: User!
+  balance: BigInt!
+  dao: Idea!
+}
+
+"A record of the proposals a user submitted to a particular DAO"
+type AuthorProfile @entity {
+  user: User!
+  dao: Idea!
+  props: [Proposal!]!
+}

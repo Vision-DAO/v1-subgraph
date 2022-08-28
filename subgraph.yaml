@@ -17,6 +17,7 @@ dataSources:
           language: wasm/assemblyscript
           entities:
             - Registry
+            - 
           abis:
             - name: Factory
               file: ./value-tree/build/contracts/Factory.json
