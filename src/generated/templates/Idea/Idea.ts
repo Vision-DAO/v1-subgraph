@@ -49,13 +49,17 @@ export class FundingDispersed__Params {
     this._event = event;
   }
 
-  get idea(): Address {
+  get from(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+
+  get to(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 
   get rate(): FundingDispersedRateStruct {
     return changetype<FundingDispersedRateStruct>(
-      this._event.parameters[1].value.toTuple()
+      this._event.parameters[2].value.toTuple()
     );
   }
 }
@@ -99,13 +103,17 @@ export class IdeaFunded__Params {
     this._event = event;
   }
 
-  get idea(): Address {
+  get from(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+
+  get to(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 
   get rate(): IdeaFundedRateStruct {
     return changetype<IdeaFundedRateStruct>(
-      this._event.parameters[1].value.toTuple()
+      this._event.parameters[2].value.toTuple()
     );
   }
 }
@@ -167,8 +175,34 @@ export class ProposalRejected__Params {
     this._event = event;
   }
 
-  get prop(): Address {
+  get governor(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+
+  get prop(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class ProposalSubmitted extends ethereum.Event {
+  get params(): ProposalSubmitted__Params {
+    return new ProposalSubmitted__Params(this);
+  }
+}
+
+export class ProposalSubmitted__Params {
+  _event: ProposalSubmitted;
+
+  constructor(event: ProposalSubmitted) {
+    this._event = event;
+  }
+
+  get governor(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get prop(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 }
 
@@ -496,6 +530,46 @@ export class Idea extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  propSubmitted(param0: Address): boolean {
+    let result = super.call("propSubmitted", "propSubmitted(address):(bool)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_propSubmitted(param0: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "propSubmitted",
+      "propSubmitted(address):(bool)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  proposals(param0: BigInt): Address {
+    let result = super.call("proposals", "proposals(uint256):(address)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+
+    return result[0].toAddress();
+  }
+
+  try_proposals(param0: BigInt): ethereum.CallResult<Address> {
+    let result = super.tryCall("proposals", "proposals(uint256):(address)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   symbol(): string {
@@ -836,6 +910,36 @@ export class TransferFromCall__Outputs {
 
   get value0(): boolean {
     return this._call.outputValues[0].value.toBoolean();
+  }
+}
+
+export class SubmitPropCall extends ethereum.Call {
+  get inputs(): SubmitPropCall__Inputs {
+    return new SubmitPropCall__Inputs(this);
+  }
+
+  get outputs(): SubmitPropCall__Outputs {
+    return new SubmitPropCall__Outputs(this);
+  }
+}
+
+export class SubmitPropCall__Inputs {
+  _call: SubmitPropCall;
+
+  constructor(call: SubmitPropCall) {
+    this._call = call;
+  }
+
+  get proposal(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SubmitPropCall__Outputs {
+  _call: SubmitPropCall;
+
+  constructor(call: SubmitPropCall) {
+    this._call = call;
   }
 }
 
