@@ -10,6 +10,24 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class FactoryCreated extends ethereum.Event {
+  get params(): FactoryCreated__Params {
+    return new FactoryCreated__Params(this);
+  }
+}
+
+export class FactoryCreated__Params {
+  _event: FactoryCreated;
+
+  constructor(event: FactoryCreated) {
+    this._event = event;
+  }
+
+  get registry(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class IdeaCreated extends ethereum.Event {
   get params(): IdeaCreated__Params {
     return new IdeaCreated__Params(this);
@@ -23,8 +41,12 @@ export class IdeaCreated__Params {
     this._event = event;
   }
 
-  get idea(): Address {
+  get registry(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+
+  get idea(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 }
 
@@ -50,6 +72,32 @@ export class Factory extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+}
+
+export class ConstructorCall extends ethereum.Call {
+  get inputs(): ConstructorCall__Inputs {
+    return new ConstructorCall__Inputs(this);
+  }
+
+  get outputs(): ConstructorCall__Outputs {
+    return new ConstructorCall__Outputs(this);
+  }
+}
+
+export class ConstructorCall__Inputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
+    this._call = call;
+  }
+}
+
+export class ConstructorCall__Outputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
+    this._call = call;
   }
 }
 
