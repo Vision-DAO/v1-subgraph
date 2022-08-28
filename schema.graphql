@@ -1,9 +1,13 @@
 "List of Ideas that have been created via the Vision UI"
 type Registry @entity {
+  id: ID!
+
   ideas: [Idea!]!
 }
 
 type Idea @entity {
+  id: ID!
+
   ipfsAddr: String!
 
   "DAO's funded by this Idea"
@@ -16,7 +20,15 @@ type Idea @entity {
   users: [UserProfile!]!
 }
 
+enum PropStatus {
+  Accepted,
+  Rejected,
+  Pending
+}
+
 type Prop @entity {
+  id: ID!
+
   funder: Idea!
 
   "The Ethereum address to which funds are sent"
@@ -31,10 +43,14 @@ type Prop @entity {
 
   "UNIX timestamp for when the prop expires"
   expiration: BigInt!
+
+  status: PropStatus!
 }
 
 "A snapshot of the proposal being voted on, and the vote cast."
 type Vote @entity {
+  id: ID!
+
   "The number of votes cast"
   votes: BigInt!
 
@@ -53,6 +69,8 @@ enum FundingType {
 
 "A designation of the kind of funding a project receives"
 type FundingRate @entity {
+  id: ID!
+
   "The ERC-20 token used to fund the project"
   token: Bytes!
 
@@ -74,6 +92,8 @@ type FundingRate @entity {
 
 "A participate on the Vision network"
 type User @entity {
+  id: ID!
+
   "The ideas the user participated in somehow"
   ideas: [UserProfile!]!
 }
@@ -81,7 +101,7 @@ type User @entity {
 "A participant in a specific DAO"
 type UserProfile @entity {
   "The index of the user among all users of the DAO"
-  id: BigInt!
+  id: ID!
 
   dao: Idea!
   user: User!
@@ -98,6 +118,8 @@ type UserProfile @entity {
 
 "A record of the votes cast by the user for a particular DAO"
 type VoterProfile @entity {
+  id: ID!
+
   user: User!
   dao: Idea!
 
@@ -107,6 +129,8 @@ type VoterProfile @entity {
 
 "A record of the number of tokens owned by a user in an idea"
 type InvestorProfile @entity {
+  id: ID!
+
   user: User!
   balance: BigInt!
   dao: Idea!
@@ -114,7 +138,9 @@ type InvestorProfile @entity {
 
 "A record of the proposals a user submitted to a particular DAO"
 type AuthorProfile @entity {
+  id: ID!
+
   user: User!
   dao: Idea!
-  props: [Proposal!]!
+  props: [Prop!]!
 }
