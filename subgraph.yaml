@@ -50,6 +50,8 @@ templates:
               handler: handleProposalRejected
             - event: FundingDispersed(address, FundingRate)
               handler: handleFundingDispersed
+            - event: Transfer(address, address, uint256)
+              handler: handleTransfer
       file: ./src/mappings/idea.ts
   - name: Proposal
     kind: ethereum/contract
