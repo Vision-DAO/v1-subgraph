@@ -29,6 +29,38 @@ type Idea @entity {
 
   "Records of the ways people have interacted with this DAO"
   users: [UserProfile!]!
+
+  "Tokens held by the DAO"
+  treasury: [TreasuryBalance!]!
+
+  "History of tranfers from the DAO"
+  transfers: [Transfer!]!
+}
+
+type Transfer @entity {
+  id: ID!
+
+  sendUser: User
+  sendDao: Idea
+
+  recipUser: User
+  recipDao: Idea
+
+  value: BigInt!
+
+  "Hash of the underlying transaction"
+  hash: String!
+}
+
+"A record of a token held by a DAO"
+type TreasuryBalance @entity {
+  id: ID!
+
+  holder: Idea!
+  balance: BigInt!
+
+  "Address of the ERC-20 token being held"
+  token: Idea!
 }
 
 enum PropStatus {
@@ -84,7 +116,7 @@ type FundingRate @entity {
   id: ID!
 
   "The ERC-20 token used to fund the project"
-  token: Bytes!
+  token: String!
 
   "The number of tokens to send in total"
   value: BigInt!
@@ -108,6 +140,9 @@ type User @entity {
 
   "The ideas the user participated in somehow"
   ideas: [UserProfile!]!
+
+  "Times the user has transfered a DAO token"
+  transfers: [Transfer!]!
 }
 
 "A participant in a specific DAO"

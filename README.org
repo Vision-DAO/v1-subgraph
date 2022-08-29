@@ -18,7 +18,7 @@ CLOSED: [2022-08-28 Sun 15:13]
 
 **** TODO ~./src/mappings/idea.ts~
 
-***** TODO Events [2/4]
+***** TODO Events [5/5]
 
 ****** DONE ~handleIdeaRecorded~
 CLOSED: [2022-08-28 Sun 20:48]
@@ -26,22 +26,25 @@ CLOSED: [2022-08-28 Sun 20:48]
 ****** DONE ~handleIdeaFunded~
 CLOSED: [2022-08-28 Sun 23:05]
 
-****** TODO ~handleProposalRejected~
+****** DONE ~handleProposalRejected~
+CLOSED: [2022-08-29 Mon 09:14]
 
-****** TODO ~handleFundingDispersed~
+****** DONE ~handleFundingDispersed~
+CLOSED: [2022-08-29 Mon 14:25]
+****** DONE ~handleProposalSubmitted~
+CLOSED: [2022-08-29 Mon 14:25]
 
 **** TODO ~./src/mappings/prop.ts~ [0/2]
 
-***** TODO Events [0/1]
 
-****** TODO ~handleNewProposal~
+***** TODO Calls [1/1]
 
-***** TODO Calls [0/1]
-
-****** TODO ~handleVote~
+****** DONE ~handleVote~
+CLOSED: [2022-08-29 Mon 19:57]
 
 **** TODO ~./src/mappings/registry.ts~ [0/1]
 
-***** TODO Events [0/1]
+***** TODO Events [1/1]
 
-****** TODO ~handleIdeaCreated~
+****** DONE ~handleIdeaCreated~
+CLOSED: [2022-08-29 Mon 19:57]

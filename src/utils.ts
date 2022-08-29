@@ -1,11 +1,19 @@
 import {
 	User,
+	Vote,
 	UserProfile,
 	AuthorProfile,
+	Prop,
+	FundingRate,
 	InvestorProfile,
 	VoterProfile,
 } from "./generated/schema";
 import { BigInt } from "@graphprotocol/graph-ts";
+
+/**
+ * Where tokens that are newly minted come from.
+ */
+export const ETH_TOKEN = "0x0000000000000000000000000000000000";
 
 export interface Entity<T> {
 	load(id: string): T | null;
@@ -34,6 +42,17 @@ export const makeIdUD = (
 export const makeFRID = (ctx: string, prop: string) => `${ctx}:${prop}`;
 
 /**
+ * Creates an ID for a treasury balance of a user or DAO.
+ */
+export const makeTreasuryID = (uID: string, token: string) => `${uID}:${token}`;
+
+/**
+ * Creates an ID for a vote cast on a proposal by a user.
+ */
+export const makeVoteID = (uID: string, propId: string) =>
+	`vote${uID}:${propId}`;
+
+/**
  * Loads the existing user or creates a new one with zero values.
  */
 export const loadOrCreateUser = (id: string): User => {
@@ -43,9 +62,52 @@ export const loadOrCreateUser = (id: string): User => {
 	if (u === null) {
 		u = new User(id);
 		u.ideas = [];
+		u.transfers = [];
 	}
 
 	return u;
+};
+
+/**
+ * Finds a vote cast by a user, or creates a blank new one.
+ * Saves a record of the newly created vote.
+ */
+export const loadOrCreateVote = (u: User, prop: Prop): Vote => {
+	const id = makeVoteID(u.id, prop.id);
+	let v = Vote.load(id);
+
+	if (v !== null) {
+		return v;
+	}
+
+	// Record the user's distinct opinion about what rates should be
+	const rate = new FundingRate(makeFRID(id, prop.id));
+	rate.token = ETH_TOKEN;
+	rate.intervalLength = BigInt.zero();
+	rate.expiry = BigInt.zero();
+	rate.lastClaimed = BigInt.zero();
+	rate.kind = "Treasury";
+	rate.save();
+
+	v = new Vote(id);
+	v.votes = BigInt.zero();
+	v.rate = rate.id;
+	v.prop = prop.id;
+
+	// Register the vote in the proposal
+	prop.voters.push(u.id);
+	prop.votes.push(v.id);
+
+	// Register the vote in the user's list of votes
+	const profile = loadOrCreateProfile(u, prop.funder);
+	const vProfile = VoterProfile.load(profile.votes);
+	vProfile.votes.push(v.id);
+
+	profile.save();
+	vProfile.save();
+	prop.save();
+	u.save();
+	v.save();
 };
 
 /**

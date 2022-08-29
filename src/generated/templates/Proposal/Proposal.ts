@@ -44,6 +44,60 @@ export class NewProposal__Params {
   }
 }
 
+export class VoteCast extends ethereum.Event {
+  get params(): VoteCast__Params {
+    return new VoteCast__Params(this);
+  }
+}
+
+export class VoteCast__Params {
+  _event: VoteCast;
+
+  constructor(event: VoteCast) {
+    this._event = event;
+  }
+
+  get voter(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get votes(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get rate(): VoteCastRateStruct {
+    return changetype<VoteCastRateStruct>(
+      this._event.parameters[2].value.toTuple()
+    );
+  }
+}
+
+export class VoteCastRateStruct extends ethereum.Tuple {
+  get token(): Address {
+    return this[0].toAddress();
+  }
+
+  get value(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get intervalLength(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get expiry(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get lastClaimed(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get kind(): i32 {
+    return this[5].toI32();
+  }
+}
+
 export class Proposal__rateResult {
   value0: Address;
   value1: BigInt;

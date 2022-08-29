@@ -172,6 +172,201 @@ export class Idea extends Entity {
   set users(value: Array<string>) {
     this.set("users", Value.fromStringArray(value));
   }
+
+  get treasury(): Array<string> {
+    let value = this.get("treasury");
+    return value!.toStringArray();
+  }
+
+  set treasury(value: Array<string>) {
+    this.set("treasury", Value.fromStringArray(value));
+  }
+
+  get transfers(): Array<string> {
+    let value = this.get("transfers");
+    return value!.toStringArray();
+  }
+
+  set transfers(value: Array<string>) {
+    this.set("transfers", Value.fromStringArray(value));
+  }
+}
+
+export class Transfer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Transfer entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Transfer must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Transfer", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Transfer | null {
+    return changetype<Transfer | null>(store.get("Transfer", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sendUser(): string | null {
+    let value = this.get("sendUser");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sendUser(value: string | null) {
+    if (!value) {
+      this.unset("sendUser");
+    } else {
+      this.set("sendUser", Value.fromString(<string>value));
+    }
+  }
+
+  get sendDao(): string | null {
+    let value = this.get("sendDao");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sendDao(value: string | null) {
+    if (!value) {
+      this.unset("sendDao");
+    } else {
+      this.set("sendDao", Value.fromString(<string>value));
+    }
+  }
+
+  get recipUser(): string | null {
+    let value = this.get("recipUser");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set recipUser(value: string | null) {
+    if (!value) {
+      this.unset("recipUser");
+    } else {
+      this.set("recipUser", Value.fromString(<string>value));
+    }
+  }
+
+  get recipDao(): string | null {
+    let value = this.get("recipDao");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set recipDao(value: string | null) {
+    if (!value) {
+      this.unset("recipDao");
+    } else {
+      this.set("recipDao", Value.fromString(<string>value));
+    }
+  }
+
+  get value(): BigInt {
+    let value = this.get("value");
+    return value!.toBigInt();
+  }
+
+  set value(value: BigInt) {
+    this.set("value", Value.fromBigInt(value));
+  }
+
+  get hash(): string {
+    let value = this.get("hash");
+    return value!.toString();
+  }
+
+  set hash(value: string) {
+    this.set("hash", Value.fromString(value));
+  }
+}
+
+export class TreasuryBalance extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TreasuryBalance entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TreasuryBalance must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TreasuryBalance", id.toString(), this);
+    }
+  }
+
+  static load(id: string): TreasuryBalance | null {
+    return changetype<TreasuryBalance | null>(store.get("TreasuryBalance", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get holder(): string {
+    let value = this.get("holder");
+    return value!.toString();
+  }
+
+  set holder(value: string) {
+    this.set("holder", Value.fromString(value));
+  }
+
+  get balance(): BigInt {
+    let value = this.get("balance");
+    return value!.toBigInt();
+  }
+
+  set balance(value: BigInt) {
+    this.set("balance", Value.fromBigInt(value));
+  }
+
+  get token(): string {
+    let value = this.get("token");
+    return value!.toString();
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
+  }
 }
 
 export class Prop extends Entity {
@@ -386,13 +581,13 @@ export class FundingRate extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get token(): Bytes {
+  get token(): string {
     let value = this.get("token");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set token(value: Bytes) {
-    this.set("token", Value.fromBytes(value));
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
   }
 
   get value(): BigInt {
@@ -487,6 +682,15 @@ export class User extends Entity {
 
   set ideas(value: Array<string>) {
     this.set("ideas", Value.fromStringArray(value));
+  }
+
+  get transfers(): Array<string> {
+    let value = this.get("transfers");
+    return value!.toStringArray();
+  }
+
+  set transfers(value: Array<string>) {
+    this.set("transfers", Value.fromStringArray(value));
   }
 }
 

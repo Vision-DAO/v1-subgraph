@@ -28,6 +28,8 @@ export const handleIdeaCreated = (event: IdeaCreated) => {
 	idea.children = [];
 	idea.parents = [];
 	idea.users = [];
+	idea.treasury = [];
+	idea.transfers = [];
 
 	// Details stored in contract state
 	const deployed = IdeaContract.bind(event.receipt.contractAddress);
