@@ -1,0 +1,12 @@
+{
+  "name": "vision-v1-subgraph",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Vision-DAO/v1-subgraph.git",
+  "author": "Dowland Aiello <dowlandaiello@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@graphprotocol/graph-ts": "^0.27.0"
+  }
+}

@@ -18,11 +18,13 @@ CLOSED: [2022-08-28 Sun 15:13]
 
 **** TODO ~./src/mappings/idea.ts~
 
-***** TODO Events [0/4]
+***** TODO Events [2/4]
 
-****** TODO ~handleIdeaRecorded~
+****** DONE ~handleIdeaRecorded~
+CLOSED: [2022-08-28 Sun 20:48]
 
-****** TODO ~handleIdeaFunded~
+****** DONE ~handleIdeaFunded~
+CLOSED: [2022-08-28 Sun 23:05]
 
 ****** TODO ~handleProposalRejected~
 

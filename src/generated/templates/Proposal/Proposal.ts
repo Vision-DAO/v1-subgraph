@@ -23,20 +23,24 @@ export class NewProposal__Params {
     this._event = event;
   }
 
-  get governed(): Address {
+  get prop(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get toFund(): Address {
+  get governed(): Address {
     return this._event.parameters[1].value.toAddress();
   }
 
+  get toFund(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
   get propIpfsHash(): string {
-    return this._event.parameters[2].value.toString();
+    return this._event.parameters[3].value.toString();
   }
 
   get expiresAt(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
+    return this._event.parameters[4].value.toBigInt();
   }
 }
 

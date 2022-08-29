@@ -7,11 +7,22 @@ type Registry @entity {
 
 type Idea @entity {
   id: ID!
-
   ipfsAddr: String!
 
+  "Contract details from construction"
+  ticker: String!
+  name: String!
+  supply: BigInt!
+
   "DAO's funded by this Idea"
-  children: [Idea!]!
+  children: [Prop!]!
+
+  "Proposals that haven't ever been finalized."
+  activeProps: [Prop!]!
+
+  "Proposals that have been accepted or rejected"
+  acceptedProps: [Prop!]!
+  rejectedProps: [Prop!]!
 
   "Ways in which the project is receiving funding"
   parents: [Prop!]!
@@ -32,9 +43,10 @@ type Prop @entity {
   funder: Idea!
 
   "The Ethereum address to which funds are sent"
-  toFund: Bytes!
+  toFund: String!
   rate: FundingRate!
 
+  author: User!
   votes: [Vote!]!
   voters: [User!]!
 

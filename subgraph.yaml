@@ -8,7 +8,7 @@ dataSources:
     name: Factory
     network: mumbai
     source:
-      address: "0xA2ea5722e98433a31F9895d547a1c20ad177e390"
+      address: "0x5f3A899656732395124C3670286Bd3Ab55C2e91A"
       abi: Factory
       startBlock: 27802787
     mapping:
@@ -21,9 +21,9 @@ dataSources:
         - name: Factory
           file: ./value-tree/build/contracts/Factory.json
       eventHandlers:
-        - event: IdeaCreated(address,address)
+        - event: IdeaCreated(address)
           handler: handleIdeaCreated
-        - event: FactoryCreated(address)
+        - event: FactoryCreated()
           handler: handleFactoryCreated
       file: ./src/mappings/factory.ts
 templates:
@@ -40,19 +40,18 @@ templates:
         - Idea
         - Prop
         - InvestorProfile
+        - AuthorProfile
       abis:
         - name: Idea
           file: ./value-tree/build/contracts/Idea.json
       eventHandlers:
-        - event: IdeaRecorded(string)
-          handler: handleIdeaRecorded
-        - event: ProposalSubmitted(address,address)
+        - event: ProposalSubmitted(address)
           handler: handleProposalSubmitted
         - event: IdeaFunded(address,address,(address,uint256,uint256,uint256,uint256,uint8))
           handler: handleIdeaFunded
-        - event: ProposalRejected(address,address)
+        - event: ProposalRejected(address)
           handler: handleProposalRejected
-        - event: FundingDispersed(address,address,(address,uint256,uint256,uint256,uint256,uint8))
+        - event: FundingDispersed(address,(address,uint256,uint256,uint256,uint256,uint8))
           handler: handleFundingDispersed
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -68,16 +67,11 @@ templates:
       language: wasm/assemblyscript
       entities:
         - Prop
-        - AuthorProfile
         - VoterProfile
         - InvestorProfile
-        - (address,uint256,uint256,uint256,uint256,uint8)
       abis:
         - name: Proposal
           file: ./value-tree/build/contracts/Prop.json
-      eventHandlers:
-        - event: NewProposal(address,address,string,uint256)
-          handler: handleNewProposal
       callHandlers:
         - function: vote(uint256,(address,uint256,uint256,uint256,uint256,uint8))
           handler: handleVote

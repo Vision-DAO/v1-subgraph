@@ -92,6 +92,33 @@ export class Idea extends Entity {
     this.set("ipfsAddr", Value.fromString(value));
   }
 
+  get ticker(): string {
+    let value = this.get("ticker");
+    return value!.toString();
+  }
+
+  set ticker(value: string) {
+    this.set("ticker", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value!.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get supply(): BigInt {
+    let value = this.get("supply");
+    return value!.toBigInt();
+  }
+
+  set supply(value: BigInt) {
+    this.set("supply", Value.fromBigInt(value));
+  }
+
   get children(): Array<string> {
     let value = this.get("children");
     return value!.toStringArray();
@@ -99,6 +126,33 @@ export class Idea extends Entity {
 
   set children(value: Array<string>) {
     this.set("children", Value.fromStringArray(value));
+  }
+
+  get activeProps(): Array<string> {
+    let value = this.get("activeProps");
+    return value!.toStringArray();
+  }
+
+  set activeProps(value: Array<string>) {
+    this.set("activeProps", Value.fromStringArray(value));
+  }
+
+  get acceptedProps(): Array<string> {
+    let value = this.get("acceptedProps");
+    return value!.toStringArray();
+  }
+
+  set acceptedProps(value: Array<string>) {
+    this.set("acceptedProps", Value.fromStringArray(value));
+  }
+
+  get rejectedProps(): Array<string> {
+    let value = this.get("rejectedProps");
+    return value!.toStringArray();
+  }
+
+  set rejectedProps(value: Array<string>) {
+    this.set("rejectedProps", Value.fromStringArray(value));
   }
 
   get parents(): Array<string> {
@@ -160,13 +214,13 @@ export class Prop extends Entity {
     this.set("funder", Value.fromString(value));
   }
 
-  get toFund(): Bytes {
+  get toFund(): string {
     let value = this.get("toFund");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set toFund(value: Bytes) {
-    this.set("toFund", Value.fromBytes(value));
+  set toFund(value: string) {
+    this.set("toFund", Value.fromString(value));
   }
 
   get rate(): string {
@@ -176,6 +230,15 @@ export class Prop extends Entity {
 
   set rate(value: string) {
     this.set("rate", Value.fromString(value));
+  }
+
+  get author(): string {
+    let value = this.get("author");
+    return value!.toString();
+  }
+
+  set author(value: string) {
+    this.set("author", Value.fromString(value));
   }
 
   get votes(): Array<string> {

@@ -22,10 +22,6 @@ export class FactoryCreated__Params {
   constructor(event: FactoryCreated) {
     this._event = event;
   }
-
-  get registry(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
 }
 
 export class IdeaCreated extends ethereum.Event {
@@ -41,12 +37,8 @@ export class IdeaCreated__Params {
     this._event = event;
   }
 
-  get registry(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
   get idea(): Address {
-    return this._event.parameters[1].value.toAddress();
+    return this._event.parameters[0].value.toAddress();
   }
 }
 

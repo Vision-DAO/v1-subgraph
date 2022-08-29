@@ -49,17 +49,13 @@ export class FundingDispersed__Params {
     this._event = event;
   }
 
-  get from(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
   get to(): Address {
-    return this._event.parameters[1].value.toAddress();
+    return this._event.parameters[0].value.toAddress();
   }
 
   get rate(): FundingDispersedRateStruct {
     return changetype<FundingDispersedRateStruct>(
-      this._event.parameters[2].value.toTuple()
+      this._event.parameters[1].value.toTuple()
     );
   }
 }
@@ -103,7 +99,7 @@ export class IdeaFunded__Params {
     this._event = event;
   }
 
-  get from(): Address {
+  get prop(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
@@ -175,12 +171,8 @@ export class ProposalRejected__Params {
     this._event = event;
   }
 
-  get governor(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
   get prop(): Address {
-    return this._event.parameters[1].value.toAddress();
+    return this._event.parameters[0].value.toAddress();
   }
 }
 
@@ -197,12 +189,8 @@ export class ProposalSubmitted__Params {
     this._event = event;
   }
 
-  get governor(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
   get prop(): Address {
-    return this._event.parameters[1].value.toAddress();
+    return this._event.parameters[0].value.toAddress();
   }
 }
 
