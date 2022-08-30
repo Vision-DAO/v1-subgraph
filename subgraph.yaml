@@ -1,5 +1,7 @@
 specVersion: 0.0.4
 description: Subgraph for Vision v1 smart contracts on Polygon
+features:
+  - fullTextSearch
 repository: https://github.com/Vision-DAO/v1-subgraph
 schema:
   file: ./schema.graphql
