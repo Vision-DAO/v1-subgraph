@@ -25,7 +25,7 @@ import {
 } from "../utils";
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
 
-export const handleProposalSubmitted = (event: ProposalSubmitted): void => {
+export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	// Acting on the Idea that is governing, if the event is emitted
 	const daoAddr = event.transaction.to;
 	if (daoAddr === null) return;
@@ -87,9 +87,9 @@ export const handleProposalSubmitted = (event: ProposalSubmitted): void => {
 	rate.save();
 	author.save();
 	PropSrc.create(receipt.contractAddress);
-};
+}
 
-export const handleIdeaFunded = (event: IdeaFunded): void => {
+export function handleIdeaFunded(event: IdeaFunded): void {
 	const daoAddr = event.transaction.to;
 	if (daoAddr === null) return;
 
@@ -150,13 +150,13 @@ export const handleIdeaFunded = (event: IdeaFunded): void => {
 	rate.save();
 	prop.save();
 	oldRate.save();
-};
+}
 
 /**
  * Called when the DAO managing a proposal fails to get 50% majority for it.
  * Marks the proposal as rejected and orphans it.
  */
-export const handleProposalRejected = (event: ProposalRejected): void => {
+export function handleProposalRejected(event: ProposalRejected): void {
 	const daoAddr = event.transaction.to;
 	if (daoAddr === null) return;
 
@@ -182,12 +182,12 @@ export const handleProposalRejected = (event: ProposalRejected): void => {
 
 	gov.save();
 	prop.save();
-};
+}
 
 /**
  * Called when a user releases funds that are available for a funded project.
  */
-export const handleFundingDispersed = (event: FundingDispersed): void => {
+export function handleFundingDispersed(event: FundingDispersed): void {
 	// Just update the claim date, other required ops are performed by transfer
 	// handler
 	const daoAddr = event.transaction.to;
@@ -200,7 +200,7 @@ export const handleFundingDispersed = (event: FundingDispersed): void => {
 
 	rate.lastClaimed = event.block.timestamp;
 	rate.save();
-};
+}
 
 class Actor {
 	dao: Idea | null;
@@ -249,13 +249,15 @@ const changeTreasury = (dao: Idea, token: string, amount: BigInt): void => {
 /**
  * Called when a user transfers tokens of a specific DAO.
  */
-export const handleTransfer = (event: TransferEvent): void => {
+export function handleTransfer(event: TransferEvent): void {
 	// A DAO, a user, or the zero address could be making this transfer
 	const sDao = Idea.load(event.params.from.toHexString());
 	const rDao = Idea.load(event.params.to.toHexString());
 
 	// Record the transfer
 	const transfer = new Transfer(event.transaction.hash.toHexString());
+	transfer.value = event.params.value;
+	transfer.hash = event.transaction.hash.toHexString();
 
 	// Increment or decrement balances of sender and recipient
 	const sender: Actor = { dao: sDao, id: event.params.from.toHexString() };
@@ -303,4 +305,4 @@ export const handleTransfer = (event: TransferEvent): void => {
 	}
 
 	transfer.save();
-};
+}

@@ -2,12 +2,12 @@ import { FactoryCreated, IdeaCreated } from "../generated/Factory/Factory";
 import { Idea as IdeaSrc } from "../generated/templates";
 import { Idea as IdeaContract } from "../generated/templates/Idea/Idea";
 import { Registry, Idea } from "../generated/schema";
-import { Address } from "@graphprotocol/graph-ts/common/numbers";
+import { log } from "@graphprotocol/graph-ts";
 
 /**
  * Called when the registry gets created
  */
-export const handleFactoryCreated = (event: FactoryCreated): void => {
+export function handleFactoryCreated(event: FactoryCreated): void {
 	const receipt = event.receipt;
 
 	if (receipt === null) return;
@@ -15,12 +15,12 @@ export const handleFactoryCreated = (event: FactoryCreated): void => {
 	const reg = new Registry(receipt.contractAddress.toHexString());
 	reg.ideas = [];
 	reg.save();
-};
+}
 
 /**
  * Called when an instance of the idea contract is created by the registry.
  */
-export const handleIdeaCreated = (event: IdeaCreated): void => {
+export function handleIdeaCreated(event: IdeaCreated): void {
 	// Create entity
 	const idea = new Idea(event.params.idea.toHexString());
 
@@ -32,20 +32,19 @@ export const handleIdeaCreated = (event: IdeaCreated): void => {
 	if (reg === null) return;
 
 	reg.ideas.push(idea.id);
-	reg.save();
 
 	// No activity yet
 	idea.children = [];
+	idea.activeProps = [];
+	idea.acceptedProps = [];
+	idea.rejectedProps = [];
 	idea.parents = [];
 	idea.users = [];
 	idea.treasury = [];
 	idea.transfers = [];
 
 	// Details stored in contract state
-	const receipt = event.receipt;
-	if (receipt === null) return;
-
-	const deployed = IdeaContract.bind(receipt.contractAddress);
+	const deployed = IdeaContract.bind(event.params.idea);
 	idea.ipfsAddr = deployed.ipfsAddr();
 	idea.ticker = deployed.symbol();
 	idea.name = deployed.name();
@@ -56,4 +55,4 @@ export const handleIdeaCreated = (event: IdeaCreated): void => {
 
 	// Listen to the contract
 	IdeaSrc.create(event.params.idea);
-};
+}

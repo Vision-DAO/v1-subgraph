@@ -8,22 +8,23 @@ dataSources:
     name: Factory
     network: mumbai
     source:
-      address: "0xb2AbbA64ecFC4561A01e7ba8Ee8841c338f11173"
+      address: "0x3BD4E81dE7b927aCCe907dC5A4C0d3a77D35d7f0"
       abi: Factory
-      startBlock: 27802787
+      startBlock: 27837158
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - Registry
       abis:
         - name: Factory
           file: ./value-tree/build/contracts/Factory.json
+        - name: Idea
+          file: ./value-tree/build/contracts/Idea.json
       eventHandlers:
         - event: IdeaCreated(address)
           handler: handleIdeaCreated
-          receipt: true
         - event: FactoryCreated()
           handler: handleFactoryCreated
           receipt: true
@@ -36,7 +37,7 @@ templates:
       abi: Idea
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - Idea
@@ -46,6 +47,8 @@ templates:
       abis:
         - name: Idea
           file: ./value-tree/build/contracts/Idea.json
+        - name: Proposal
+          file: ./value-tree/build/contracts/Prop.json
       eventHandlers:
         - event: ProposalSubmitted(address)
           handler: handleProposalSubmitted
@@ -66,7 +69,7 @@ templates:
       abi: Proposal
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - Prop
