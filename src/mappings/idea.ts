@@ -40,7 +40,7 @@ export const handleProposalSubmitted = (event: ProposalSubmitted) => {
 		)
 	);
 	const rateContract = propContract.rate();
-	rate.token = rateContract.value0;
+	rate.token = rateContract.value0.toHexString();
 	rate.value = rateContract.value1;
 	rate.intervalLength = rateContract.value2;
 	rate.expiry = rateContract.value3;
