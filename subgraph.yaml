@@ -23,8 +23,10 @@ dataSources:
       eventHandlers:
         - event: IdeaCreated(address)
           handler: handleIdeaCreated
+          receipt: true
         - event: FactoryCreated()
           handler: handleFactoryCreated
+          receipt: true
       file: ./src/mappings/factory.ts
 templates:
   - name: Idea
@@ -47,6 +49,7 @@ templates:
       eventHandlers:
         - event: ProposalSubmitted(address)
           handler: handleProposalSubmitted
+          receipt: true
         - event: IdeaFunded(address,address,(address,uint256,uint256,uint256,uint256,uint8))
           handler: handleIdeaFunded
         - event: ProposalRejected(address)
