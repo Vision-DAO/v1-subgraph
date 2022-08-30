@@ -10,7 +10,7 @@ type _Schema_
     name: "ideaPropSearch"
     language: en
     algorithm: rank
-    include: [{ entity: "Idea", fields: [{ name: "name" }, { name: "ipfsAddr" }, { name: "id" }, { name: "ticker" }] }, { entity: "Prop", fields: [{ name: "id" }, { name: "title" }, { name: "ipfsAddr" }] }]
+    include: [{ entity: "Idea", fields: [{ name: "name" }, { name: "ipfsAddr" }, { name: "id" }, { name: "ticker" }] }]
   )
 
 type Idea @entity {
