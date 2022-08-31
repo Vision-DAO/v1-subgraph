@@ -68,7 +68,9 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	prop.status = "Pending";
 
 	// Update list of proposals
-	gov.activeProps.push(prop.id);
+	const activeProps = gov.activeProps;
+	activeProps.push(prop.id);
+	gov.activeProps = activeProps;
 
 	// Add the new idea to the author's record
 	const author = loadOrCreateUser(event.transaction.from.toHexString());
@@ -78,7 +80,10 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	const authRec = AuthorProfile.load(prof.props);
 	if (authRec === null) return;
 
-	authRec.props.push(prop.id);
+	const props = authRec.props;
+	props.push(prop.id);
+	authRec.props = props;
+
 	authRec.save();
 
 	// Save to DB, and listen
@@ -120,21 +125,29 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 
 	if (propI !== -1) gov.activeProps.splice(propI, 1);
 
-	gov.acceptedProps.push(prop.id);
+	const accepted = gov.acceptedProps;
+	accepted.push(prop.id);
+	gov.acceptedProps = accepted;
 
 	// Mark old funding rates to this beneficiary as void, if there are any
 	let oldRate = FundingRate.load(makeFRID(prop.funder, prop.toFund));
 
 	if (oldRate === null) {
 		oldRate = new FundingRate(makeFRID(prop.funder, prop.toFund));
-		gov.children.push(oldRate.id);
+
+		const children = gov.children;
+		children.push(oldRate.id);
+		gov.children = children;
 
 		const recipient = Idea.load(daoAddr.toHexString());
 
 		// Update the funders of the Idea receiving funds, if there is one (could be
 		// normal ETH address)
 		if (recipient !== null) {
-			recipient.parents.push(prop.id);
+			const parents = recipient.parents;
+			parents.push(prop.id);
+			recipient.parents = parents;
+
 			recipient.save();
 		}
 	}
@@ -178,7 +191,9 @@ export function handleProposalRejected(event: ProposalRejected): void {
 
 	if (propI !== -1) gov.activeProps.splice(propI, 1);
 
-	gov.rejectedProps.push(prop.id);
+	const rejected = gov.rejectedProps;
+	rejected.push(prop.id);
+	gov.rejectedProps = rejected;
 
 	gov.save();
 	prop.save();
@@ -282,7 +297,10 @@ export function handleTransfer(event: TransferEvent): void {
 
 		if (actor === null) {
 			const user = loadOrCreateUser(id);
-			user.transfers.push(transfer.id);
+
+			const transfers = user.transfers;
+			transfers.push(transfer.id);
+			user.transfers = transfers;
 
 			if (i === 0) transfer.sendUser = user.id;
 			else transfer.recipUser = user.id;
@@ -294,7 +312,10 @@ export function handleTransfer(event: TransferEvent): void {
 		}
 
 		changeTreasury(actor, token.toHexString(), amt);
-		actor.transfers.push(transfer.id);
+
+		const transfers = actor.transfers;
+		transfers.push(transfer.id);
+		actor.transfers = transfers;
 
 		if (i === 0) transfer.sendDao = actor.id;
 		else transfer.recipDao = actor.id;

@@ -101,7 +101,9 @@ export const loadOrCreateProfile = (u: User, daoId: string): UserProfile => {
 		prof.save();
 	}
 
-	u.ideas.push(prof.id);
+	const ideas = u.ideas;
+	ideas.push(prof.id);
+	u.ideas = ideas;
 
 	return prof;
 };
@@ -133,15 +135,22 @@ export const loadOrCreateVote = (u: User, prop: Prop): Vote => {
 	v.prop = prop.id;
 
 	// Register the vote in the proposal
-	prop.voters.push(u.id);
-	prop.votes.push(v.id);
+	const voters = prop.voters;
+	voters.push(u.id);
+	prop.voters = voters;
+
+	const votes = prop.votes;
+	votes.push(v.id);
+	prop.votes = votes;
 
 	// Register the vote in the user's list of votes
 	const profile = loadOrCreateProfile(u, prop.funder);
 	const vProfile = VoterProfile.load(profile.votes);
 	if (vProfile === null) return v;
 
-	vProfile.votes.push(v.id);
+	const profVotes = vProfile.votes;
+	profVotes.push(v.id);
+	vProfile.votes = profVotes;
 
 	profile.save();
 	vProfile.save();

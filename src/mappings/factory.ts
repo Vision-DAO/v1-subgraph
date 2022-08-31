@@ -2,7 +2,6 @@ import { FactoryCreated, IdeaCreated } from "../generated/Factory/Factory";
 import { Idea as IdeaSrc } from "../generated/templates";
 import { Idea as IdeaContract } from "../generated/templates/Idea/Idea";
 import { Registry, Idea } from "../generated/schema";
-import { log } from "@graphprotocol/graph-ts";
 
 /**
  * Called when the registry gets created
@@ -31,7 +30,9 @@ export function handleIdeaCreated(event: IdeaCreated): void {
 	const reg = Registry.load(to.toHexString());
 	if (reg === null) return;
 
-	reg.ideas.push(idea.id);
+	const ideas = reg.ideas;
+	ideas.push(idea.id);
+	reg.ideas = ideas;
 
 	// No activity yet
 	idea.children = [];

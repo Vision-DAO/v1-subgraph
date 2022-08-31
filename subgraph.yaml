@@ -19,6 +19,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Registry
+        - Idea
       abis:
         - name: Factory
           file: ./value-tree/build/contracts/Factory.json
@@ -46,6 +47,12 @@ templates:
         - Prop
         - InvestorProfile
         - AuthorProfile
+        - VoterProfile
+        - User
+        - Transfer
+        - FundingRate
+        - TreasuryBalance
+        - Vote
       abis:
         - name: Idea
           file: ./value-tree/build/contracts/Idea.json
@@ -74,9 +81,16 @@ templates:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
+        - Idea
         - Prop
-        - VoterProfile
         - InvestorProfile
+        - AuthorProfile
+        - VoterProfile
+        - User
+        - Transfer
+        - FundingRate
+        - TreasuryBalance
+        - Vote
       abis:
         - name: Proposal
           file: ./value-tree/build/contracts/Prop.json
