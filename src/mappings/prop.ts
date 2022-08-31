@@ -8,8 +8,7 @@ import { loadOrCreateVote } from "../utils";
  */
 export function handleVote(event: VoteCast): void {
 	// Need to sync funding details
-	const propAddr = event.transaction.to;
-	if (propAddr === null) return;
+	const propAddr = event.address;
 
 	const propContract = PropContract.bind(propAddr);
 

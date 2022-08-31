@@ -27,8 +27,7 @@ import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
 
 export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	// Acting on the Idea that is governing, if the event is emitted
-	const daoAddr = event.transaction.to;
-	if (daoAddr === null) return;
+	const daoAddr = event.address;
 
 	const gov = Idea.load(daoAddr.toHexString());
 	if (gov === null) return;
@@ -95,8 +94,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 }
 
 export function handleIdeaFunded(event: IdeaFunded): void {
-	const daoAddr = event.transaction.to;
-	if (daoAddr === null) return;
+	const daoAddr = event.address;
 
 	const gov = Idea.load(daoAddr.toHexString());
 	if (gov === null) return;
@@ -170,8 +168,7 @@ export function handleIdeaFunded(event: IdeaFunded): void {
  * Marks the proposal as rejected and orphans it.
  */
 export function handleProposalRejected(event: ProposalRejected): void {
-	const daoAddr = event.transaction.to;
-	if (daoAddr === null) return;
+	const daoAddr = event.address;
 
 	const gov = Idea.load(daoAddr.toHexString());
 	if (gov === null) return;
@@ -205,8 +202,7 @@ export function handleProposalRejected(event: ProposalRejected): void {
 export function handleFundingDispersed(event: FundingDispersed): void {
 	// Just update the claim date, other required ops are performed by transfer
 	// handler
-	const daoAddr = event.transaction.to;
-	if (daoAddr === null) return;
+	const daoAddr = event.address;
 
 	const rate = FundingRate.load(
 		makeFRID(daoAddr.toHexString(), event.params.to.toHexString())
@@ -279,9 +275,7 @@ export function handleTransfer(event: TransferEvent): void {
 	const recip: Actor = { dao: rDao, id: event.params.to.toHexString() };
 	const actors = [sender, recip];
 
-	const token = event.transaction.to;
-
-	if (token === null) return;
+	const token = event.address;
 
 	// Pardon this dogshit iteration, assemblyscript is ultra omega ass
 	// This codebase was moderately clean before I had to refactor it

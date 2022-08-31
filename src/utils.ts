@@ -8,7 +8,7 @@ import {
 	InvestorProfile,
 	VoterProfile,
 } from "./generated/schema";
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 
 /**
  * Where tokens that are newly minted come from.

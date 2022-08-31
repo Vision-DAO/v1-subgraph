@@ -23,8 +23,7 @@ export function handleIdeaCreated(event: IdeaCreated): void {
 	// Create entity
 	const idea = new Idea(event.params.idea.toHexString());
 
-	const to = event.transaction.to;
-	if (to === null) return;
+	const to = event.address;
 
 	// Recipient is the registry
 	const reg = Registry.load(to.toHexString());
