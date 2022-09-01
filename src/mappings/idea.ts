@@ -237,6 +237,25 @@ const changeInvestorProfile = (
 
 	iProf.balance = iProf.balance.plus(amount);
 
+	// Add or remove the user as a DAO member
+	const dao = Idea.load(token);
+
+	if (dao !== null) {
+		const users = dao.users;
+
+		if (iProf.balance.equals(BigInt.zero())) {
+			let uIdx = -1;
+
+			for (; uIdx < users.length; uIdx++)
+				if (users[uIdx] === investor.id) break;
+
+			if (uIdx !== -1) users.splice(uIdx, 1);
+		}
+
+		dao.users = users;
+		dao.save();
+	}
+
 	iProf.save();
 	prof.save();
 };

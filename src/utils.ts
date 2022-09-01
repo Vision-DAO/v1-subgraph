@@ -4,11 +4,11 @@ import {
 	UserProfile,
 	AuthorProfile,
 	Prop,
-	FundingRate,
+	Idea,
 	InvestorProfile,
 	VoterProfile,
 } from "./generated/schema";
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 /**
  * Where tokens that are newly minted come from.
@@ -92,6 +92,17 @@ export const loadOrCreateProfile = (u: User, daoId: string): UserProfile => {
 		vProf.dao = daoId;
 		vProf.votes = [];
 		prof.votes = vProf.id;
+
+		const dao = Idea.load(daoId);
+
+		// Update membership in the DAO itself
+		if (dao !== null) {
+			const users = dao.users;
+
+			users.push(prof.id);
+			dao.users = users;
+			dao.save();
+		}
 
 		// Write changes to all profiles
 		aProf.save();
