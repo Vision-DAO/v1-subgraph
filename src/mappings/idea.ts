@@ -46,13 +46,13 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 			propContract.toFund().toHexString()
 		)
 	);
-	const rateContract = propContract.rate();
-	rate.token = rateContract.value0.toHexString();
-	rate.value = rateContract.value1;
-	rate.intervalLength = rateContract.value2;
-	rate.expiry = rateContract.value3;
-	rate.lastClaimed = rateContract.value4;
-	rate.kind = rateContract.value5 === 0 ? "Treasury" : "Mint";
+	const rateContract = propContract.finalFundsRate();
+	rate.token = rateContract.token.toHexString();
+	rate.value = rateContract.value;
+	rate.intervalLength = rateContract.intervalLength;
+	rate.expiry = rateContract.expiry;
+	rate.lastClaimed = rateContract.lastClaimed;
+	rate.kind = ["Treasury", "Mint"][rateContract.kind];
 
 	// Idea is a factory
 	const prop = new Prop(receipt.contractAddress.toHexString());

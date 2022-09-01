@@ -17,15 +17,15 @@ export function handleVote(event: VoteCast): void {
 	if (prop === null) return;
 
 	// Update details of the funding
-	const newRate = propContract.rate();
+	const newRate = propContract.finalFundsRate();
 
 	const rate = FundingRate.load(prop.rate);
 	if (rate === null) return;
 
-	rate.value = newRate.value1;
-	rate.intervalLength = newRate.value2;
-	rate.expiry = newRate.value3;
-	rate.lastClaimed = newRate.value4;
+	rate.value = newRate.value;
+	rate.intervalLength = newRate.intervalLength;
+	rate.expiry = newRate.expiry;
+	rate.lastClaimed = newRate.lastClaimed;
 	rate.save();
 
 	// Save a record of the user's submitted vote (or alter an existing one)
@@ -34,17 +34,7 @@ export function handleVote(event: VoteCast): void {
 
 	const vote = loadOrCreateVote(voter, prop);
 	vote.votes = vote.votes.plus(event.params.votes);
-
-	// Update the record of their vote to have the details they specified
-	const voteRate = FundingRate.load(vote.rate);
-	if (voteRate === null) return;
-
-	const votedRate = event.params.rate;
-	voteRate.value = votedRate.value;
-	voteRate.intervalLength = votedRate.intervalLength;
-	voteRate.expiry = votedRate.expiry;
-	voteRate.lastClaimed = votedRate.lastClaimed;
-	voteRate.save();
+	vote.kind = ["For", "Against"][event.params.kind];
 
 	voter.save();
 	vote.save();

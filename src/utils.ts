@@ -120,18 +120,9 @@ export const loadOrCreateVote = (u: User, prop: Prop): Vote => {
 		return v;
 	}
 
-	// Record the user's distinct opinion about what rates should be
-	const rate = new FundingRate(makeFRID(id, prop.id));
-	rate.token = ETH_TOKEN;
-	rate.intervalLength = BigInt.zero();
-	rate.expiry = BigInt.zero();
-	rate.lastClaimed = BigInt.zero();
-	rate.kind = "Treasury";
-	rate.save();
-
 	v = new Vote(id);
 	v.votes = BigInt.zero();
-	v.rate = rate.id;
+	v.kind = "For";
 	v.prop = prop.id;
 
 	// Register the vote in the proposal

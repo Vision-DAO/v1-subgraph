@@ -99,6 +99,11 @@ type Prop @entity {
   status: PropStatus!
 }
 
+enum VoteKind {
+  For,
+  Against,
+}
+
 "A snapshot of the proposal being voted on, and the vote cast."
 type Vote @entity {
   id: ID!
@@ -106,8 +111,8 @@ type Vote @entity {
   "The number of votes cast"
   votes: BigInt!
 
-  "The details of the user's vote"
-  rate: FundingRate!
+  "Whether the user voted for or against the prop"
+  kind: VoteKind!
 
   "The proposal being voted on"
   prop: Prop!
