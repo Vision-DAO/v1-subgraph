@@ -43,6 +43,9 @@ type Idea @entity {
 
   "History of tranfers from the DAO"
   transfers: [Transfer!]!
+
+  "The timestamp the idea was created at"
+  createdAt: BigInt!
 }
 
 type Transfer @entity {
@@ -98,6 +101,9 @@ type Prop @entity {
 
   "UNIX timestamp for when the prop expires"
   expiration: BigInt!
+
+  "The date that the proposal was created at"
+  createdAt: BigInt!
 
   status: PropStatus!
 }

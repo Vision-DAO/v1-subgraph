@@ -67,6 +67,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	prop.title = propContract.title();
 	prop.expiration = propContract.expiresAt();
 	prop.status = "Pending";
+	prop.createdAt = event.block.timestamp;
 
 	// Update list of proposals
 	const activeProps = gov.activeProps;

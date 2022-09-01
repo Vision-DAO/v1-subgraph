@@ -42,6 +42,7 @@ export function handleIdeaCreated(event: IdeaCreated): void {
 	idea.users = [];
 	idea.treasury = [];
 	idea.transfers = [];
+	idea.createdAt = event.block.timestamp;
 
 	// Details stored in contract state
 	const deployed = IdeaContract.bind(event.params.idea);
