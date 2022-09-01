@@ -62,6 +62,8 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	prop.votes = [];
 	prop.voters = [];
 	prop.ipfsAddr = propContract.ipfsAddr();
+	prop.votesFor = BigInt.zero();
+	prop.votesAgainst = BigInt.zero();
 	prop.title = propContract.title();
 	prop.expiration = propContract.expiresAt();
 	prop.status = "Pending";

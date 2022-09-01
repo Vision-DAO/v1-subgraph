@@ -36,6 +36,11 @@ export function handleVote(event: VoteCast): void {
 	vote.votes = vote.votes.plus(event.params.votes);
 	vote.kind = ["For", "Against"][event.params.kind];
 
+	if (event.params.kind === 0)
+		prop.votesFor = prop.votesFor.plus(event.params.votes);
+	else prop.votesAgainst = prop.votesAgainst.plus(event.params.votes);
+
+	prop.save();
 	voter.save();
 	vote.save();
 }
