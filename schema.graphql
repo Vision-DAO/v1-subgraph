@@ -105,6 +105,9 @@ type Prop @entity {
   "The date that the proposal was created at"
   createdAt: BigInt!
 
+  "The time that the proposal was accepted at"
+  finalizedAt: BigInt
+
   status: PropStatus!
 }
 
@@ -125,6 +128,9 @@ type Vote @entity {
 
   "The proposal being voted on"
   prop: Prop!
+
+  "When the vote was cast"
+  createdAt: BigInt!
 }
 
 "How a project is funded"

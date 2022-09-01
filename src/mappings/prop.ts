@@ -32,7 +32,7 @@ export function handleVote(event: VoteCast): void {
 	const voter = User.load(event.transaction.from.toHexString());
 	if (voter === null) return;
 
-	const vote = loadOrCreateVote(voter, prop);
+	const vote = loadOrCreateVote(event.block.timestamp, voter, prop);
 	vote.votes = vote.votes.plus(event.params.votes);
 	vote.kind = ["For", "Against"][event.params.kind];
 

@@ -123,7 +123,11 @@ export const loadOrCreateProfile = (u: User, daoId: string): UserProfile => {
  * Finds a vote cast by a user, or creates a blank new one.
  * Saves a record of the newly created vote.
  */
-export const loadOrCreateVote = (u: User, prop: Prop): Vote => {
+export const loadOrCreateVote = (
+	timestamp: BigInt,
+	u: User,
+	prop: Prop
+): Vote => {
 	const id = makeVoteID(u.id, prop.id);
 	let v = Vote.load(id);
 
@@ -135,6 +139,7 @@ export const loadOrCreateVote = (u: User, prop: Prop): Vote => {
 	v.votes = BigInt.zero();
 	v.kind = "For";
 	v.prop = prop.id;
+	v.createdAt = timestamp;
 
 	// Register the vote in the proposal
 	const voters = prop.voters;

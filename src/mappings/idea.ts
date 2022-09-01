@@ -111,6 +111,7 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 
 	// Mark the proposal as accepted
 	prop.status = "Accepted";
+	prop.finalizedAt = event.block.timestamp;
 	rate.lastClaimed = event.block.timestamp;
 	let propI = -1;
 
