@@ -291,6 +291,7 @@ export function handleTransfer(event: TransferEvent): void {
 
 	// Record the transfer
 	const transfer = new Transfer(event.transaction.hash.toHexString());
+	transfer.createdAt = event.block.timestamp;
 	transfer.value = event.params.value;
 	transfer.hash = event.transaction.hash.toHexString();
 

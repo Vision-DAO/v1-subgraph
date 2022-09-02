@@ -61,6 +61,9 @@ type Transfer @entity {
 
   "Hash of the underlying transaction"
   hash: String!
+
+  "Timestamp of the transaction"
+  createdAt: BigInt!
 }
 
 "A record of a token held by a DAO"
