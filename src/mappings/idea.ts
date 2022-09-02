@@ -182,6 +182,7 @@ export function handleProposalRejected(event: ProposalRejected): void {
 
 	// Mark the proposal as rejected
 	prop.status = "Rejected";
+	prop.finalizedAt = event.block.timestamp;
 
 	// Remove it from pending props
 	let propI = -1;
