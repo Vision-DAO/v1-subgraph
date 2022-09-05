@@ -24,6 +24,7 @@ import {
 	makeTreasuryID,
 } from "../utils";
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
+import { log } from "@graphprotocol/graph-ts";
 
 export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	// Acting on the Idea that is governing, if the event is emitted
@@ -36,7 +37,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	const receipt = event.receipt;
 	if (receipt === null) return;
 
-	const propContract = PropContract.bind(receipt.contractAddress);
+	const propContract = PropContract.bind(event.params.prop);
 	if (propContract === null) return;
 
 	// Extract initial details of the funding in a readable format
@@ -46,6 +47,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 			propContract.toFund().toHexString()
 		)
 	);
+
 	const rateContract = propContract.finalFundsRate();
 	rate.token = rateContract.token.toHexString();
 	rate.value = rateContract.value;
@@ -55,7 +57,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	rate.kind = ["Treasury", "Mint"][rateContract.kind];
 
 	// Idea is a factory
-	const prop = new Prop(receipt.contractAddress.toHexString());
+	const prop = new Prop(event.params.prop.toHexString());
 	prop.funder = gov.id;
 	prop.toFund = propContract.toFund().toHexString();
 	prop.rate = rate.id;
@@ -93,7 +95,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	prop.save();
 	rate.save();
 	author.save();
-	PropSrc.create(receipt.contractAddress);
+	PropSrc.create(event.params.prop);
 }
 
 export function handleIdeaFunded(event: IdeaFunded): void {
