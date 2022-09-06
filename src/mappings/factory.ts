@@ -9,7 +9,7 @@ import { Registry, Idea } from "../generated/schema";
 export function handleFactoryCreated(event: FactoryCreated): void {
 	const receipt = event.receipt;
 
-	if (receipt === null) return;
+	if (receipt == null) return;
 
 	const reg = new Registry(receipt.contractAddress.toHexString());
 	reg.ideas = [];
@@ -27,7 +27,7 @@ export function handleIdeaCreated(event: IdeaCreated): void {
 
 	// Recipient is the registry
 	const reg = Registry.load(to.toHexString());
-	if (reg === null) return;
+	if (reg == null) return;
 
 	const ideas = reg.ideas;
 	ideas.push(idea.id);

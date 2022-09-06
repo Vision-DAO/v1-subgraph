@@ -8,7 +8,7 @@ import {
 	InvestorProfile,
 	VoterProfile,
 } from "./generated/schema";
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 
 /**
  * Where tokens that are newly minted come from.
@@ -50,10 +50,12 @@ export const loadOrCreateUser = (id: string): User => {
 	let u = User.load(id);
 
 	// Zero out required fields
-	if (u === null) {
+	if (u == null) {
 		u = new User(id);
 		u.ideas = [];
 		u.transfers = [];
+
+		u.save();
 	}
 
 	return u;
@@ -64,57 +66,57 @@ export const loadOrCreateUser = (id: string): User => {
  * their profile.
  */
 export const loadOrCreateProfile = (u: User, daoId: string): UserProfile => {
-	const uid = u.id;
+	const existProf = UserProfile.load(makeIdUD("general", u.id, daoId));
 
-	let prof = UserProfile.load(`${uid}:${daoId}`);
+	if (existProf != null) return existProf;
 
-	if (prof === null) {
-		// Make a container for sub-profiles
-		prof = new UserProfile(makeIdUD("general", u.id, daoId));
-		prof.dao = daoId;
-		prof.user = u.id;
+	// Make a container for sub-profiles
+	const prof = new UserProfile(makeIdUD("general", u.id, daoId));
+	prof.dao = daoId;
+	prof.user = u.id;
 
-		// Each interaction profile has 3 sub-profiles
-		const aProf = new AuthorProfile(makeIdUD("author", u.id, daoId));
-		aProf.user = u.id;
-		aProf.dao = daoId;
-		aProf.props = [];
-		prof.props = aProf.id;
+	// Each interaction profile has 3 sub-profiles
+	const aProf = new AuthorProfile(makeIdUD("author", u.id, daoId));
+	aProf.user = u.id;
+	aProf.dao = daoId;
+	aProf.props = [];
+	prof.props = aProf.id;
 
-		const iProf = new InvestorProfile(makeIdUD("investor", u.id, daoId));
-		iProf.user = u.id;
-		iProf.dao = daoId;
-		iProf.balance = BigInt.fromU32(0);
-		prof.tokens = iProf.id;
+	const iProf = new InvestorProfile(makeIdUD("investor", u.id, daoId));
+	iProf.user = u.id;
+	iProf.dao = daoId;
+	iProf.balance = BigInt.fromU32(0);
+	prof.tokens = iProf.id;
 
-		const vProf = new VoterProfile(makeIdUD("voter", u.id, daoId));
-		vProf.user = u.id;
-		vProf.dao = daoId;
-		vProf.votes = [];
-		prof.votes = vProf.id;
+	const vProf = new VoterProfile(makeIdUD("voter", u.id, daoId));
+	vProf.user = u.id;
+	vProf.dao = daoId;
+	vProf.votes = [];
+	prof.votes = vProf.id;
 
-		const dao = Idea.load(daoId);
+	const dao = Idea.load(daoId);
 
-		// Update membership in the DAO itself
-		if (dao !== null) {
-			const users = dao.users;
+	// Update membership in the DAO itself
+	if (dao != null) {
+		const users = dao.users;
 
-			users.push(prof.id);
-			dao.users = users;
-			dao.save();
-		}
-
-		// Write changes to all profiles
-		aProf.save();
-		iProf.save();
-		vProf.save();
-
-		prof.save();
+		users.push(prof.id);
+		dao.users = users;
+		dao.save();
 	}
+
+	// Write changes to all profiles
+	aProf.save();
+	iProf.save();
+	vProf.save();
+
+	prof.save();
 
 	const ideas = u.ideas;
 	ideas.push(prof.id);
 	u.ideas = ideas;
+
+	u.save();
 
 	return prof;
 };
@@ -131,7 +133,7 @@ export const loadOrCreateVote = (
 	const id = makeVoteID(u.id, prop.id);
 	let v = Vote.load(id);
 
-	if (v !== null) {
+	if (v != null) {
 		return v;
 	}
 
@@ -153,7 +155,7 @@ export const loadOrCreateVote = (
 	// Register the vote in the user's list of votes
 	const profile = loadOrCreateProfile(u, prop.funder);
 	const vProfile = VoterProfile.load(profile.votes);
-	if (vProfile === null) return v;
+	if (vProfile == null) return v;
 
 	const profVotes = vProfile.votes;
 	profVotes.push(v.id);
@@ -167,3 +169,19 @@ export const loadOrCreateVote = (
 
 	return v;
 };
+
+/**
+ * Issues a debug info log with the balance of the specified user's address.
+ */
+export function debugUBalance(address: string, dao: string): void {
+	log.debug("sanity-checking saved user {} for {}", [address, dao]);
+
+	const user = User.load(address);
+
+	if (user == null) return;
+
+	const profile = InvestorProfile.load(makeIdUD("investor", user.id, dao));
+	if (profile == null) return;
+
+	log.info("user {} here {}", [address, profile.balance.toString()]);
+}

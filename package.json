@@ -8,5 +8,11 @@
   "private": true,
   "dependencies": {
     "@graphprotocol/graph-ts": "^0.27.0"
+  },
+  "scripts": {
+    "test": "graph test"
+  },
+  "devDependencies": {
+    "matchstick-as": "^0.5.0"
   }
 }

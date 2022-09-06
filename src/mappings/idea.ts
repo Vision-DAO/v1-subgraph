@@ -31,14 +31,14 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	const daoAddr = event.address;
 
 	const gov = Idea.load(daoAddr.toHexString());
-	if (gov === null) return;
+	if (gov == null) return;
 
 	// For fetching details of the funding
 	const receipt = event.receipt;
-	if (receipt === null) return;
+	if (receipt == null) return;
 
 	const propContract = PropContract.bind(event.params.prop);
-	if (propContract === null) return;
+	if (propContract == null) return;
 
 	// Extract initial details of the funding in a readable format
 	const rate = new FundingRate(
@@ -82,7 +82,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	prop.author = author.id;
 
 	const authRec = AuthorProfile.load(prof.props);
-	if (authRec === null) return;
+	if (authRec == null) return;
 
 	const props = authRec.props;
 	props.push(prop.id);
@@ -102,14 +102,14 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 	const daoAddr = event.address;
 
 	const gov = Idea.load(daoAddr.toHexString());
-	if (gov === null) return;
+	if (gov == null) return;
 
 	const prop = Prop.load(event.params.prop.toHexString());
-	if (prop === null) return;
+	if (prop == null) return;
 
 	// Once the proposal is accepted, funding begins
 	const rate = FundingRate.load(prop.rate);
-	if (rate === null) return;
+	if (rate == null) return;
 
 	// Mark the proposal as accepted
 	prop.status = "Accepted";
@@ -120,14 +120,14 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 	for (let i = 0; i < gov.activeProps.length; i++) {
 		const propId = gov.activeProps[i];
 
-		if (propId === event.params.prop.toHexString()) {
+		if (propId == event.params.prop.toHexString()) {
 			propI = i;
 
 			break;
 		}
 	}
 
-	if (propI !== -1) gov.activeProps.splice(propI, 1);
+	if (propI != -1 && propI < gov.activeProps.length) gov.activeProps.splice(propI, 1);
 
 	const accepted = gov.acceptedProps;
 	accepted.push(prop.id);
@@ -136,7 +136,7 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 	// Mark old funding rates to this beneficiary as void, if there are any
 	let oldRate = FundingRate.load(makeFRID(prop.funder, prop.toFund));
 
-	if (oldRate === null) {
+	if (oldRate == null) {
 		oldRate = new FundingRate(makeFRID(prop.funder, prop.toFund));
 
 		const children = gov.children;
@@ -147,7 +147,7 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 
 		// Update the funders of the Idea receiving funds, if there is one (could be
 		// normal ETH address)
-		if (recipient !== null) {
+		if (recipient != null) {
 			const parents = recipient.parents;
 			parents.push(prop.id);
 			recipient.parents = parents;
@@ -177,10 +177,10 @@ export function handleProposalRejected(event: ProposalRejected): void {
 	const daoAddr = event.address;
 
 	const gov = Idea.load(daoAddr.toHexString());
-	if (gov === null) return;
+	if (gov == null) return;
 
 	const prop = Prop.load(event.params.prop.toHexString());
-	if (prop === null) return;
+	if (prop == null) return;
 
 	// Mark the proposal as rejected
 	prop.status = "Rejected";
@@ -190,10 +190,10 @@ export function handleProposalRejected(event: ProposalRejected): void {
 	let propI = -1;
 
 	for (let i = 0; i < gov.activeProps.length; i++) {
-		if (gov.activeProps[i] === event.params.prop.toHexString()) propI = i;
+		if (gov.activeProps[i] == event.params.prop.toHexString()) propI = i;
 	}
 
-	if (propI !== -1) gov.activeProps.splice(propI, 1);
+	if (propI != -1 && propI < gov.activeProps.length) gov.activeProps.splice(propI, 1);
 
 	const rejected = gov.rejectedProps;
 	rejected.push(prop.id);
@@ -214,7 +214,7 @@ export function handleFundingDispersed(event: FundingDispersed): void {
 	const rate = FundingRate.load(
 		makeFRID(daoAddr.toHexString(), event.params.to.toHexString())
 	);
-	if (rate === null) return;
+	if (rate == null) return;
 
 	rate.lastClaimed = event.block.timestamp;
 	rate.save();
@@ -238,23 +238,25 @@ const changeInvestorProfile = (
 
 	const iProf = InvestorProfile.load(prof.tokens);
 	// This is literally impossible
-	if (iProf === null) return;
+	if (iProf == null) return;
 
 	iProf.balance = iProf.balance.plus(amount);
 
 	// Add or remove the user as a DAO member
 	const dao = Idea.load(token);
 
-	if (dao !== null) {
+	if (dao != null) {
 		const users = dao.users;
 
 		if (iProf.balance.equals(BigInt.zero())) {
 			let uIdx = -1;
 
-			for (; uIdx < users.length; uIdx++)
-				if (users[uIdx] === investor.id) break;
+			for (let i = 0; i < users.length; i++, uIdx++)
+				if (users[i] == investor.id) break;
 
-			if (uIdx !== -1) users.splice(uIdx, 1);
+			if (uIdx != -1 && uIdx < users.length) users.splice(uIdx, 1);
+
+			log.info("tres", []);
 		}
 
 		dao.users = users;
@@ -263,6 +265,7 @@ const changeInvestorProfile = (
 
 	iProf.save();
 	prof.save();
+	investor.save();
 };
 
 /**
@@ -273,7 +276,7 @@ const changeTreasury = (dao: Idea, token: string, amount: BigInt): void => {
 	const id = makeTreasuryID(dao.id, token);
 	let treasury = TreasuryBalance.load(id);
 
-	if (treasury === null) {
+	if (treasury == null) {
 		treasury = new TreasuryBalance(id);
 		treasury.token = token;
 		treasury.holder = dao.id;
@@ -292,7 +295,7 @@ export function handleTransfer(event: TransferEvent): void {
 	const rDao = Idea.load(event.params.to.toHexString());
 
 	// Record the transfer
-	const transfer = new Transfer(event.transaction.hash.toHexString());
+	let transfer = new Transfer(event.transaction.hash.toHexString());
 	transfer.createdAt = event.block.timestamp;
 	transfer.value = event.params.value;
 	transfer.hash = event.transaction.hash.toHexString();
@@ -314,17 +317,20 @@ export function handleTransfer(event: TransferEvent): void {
 
 		// Subtract if we're altering the sender balance, add if recip
 		let amt = event.params.value;
-		if (i === 0) amt = event.params.value.times(BigInt.fromI32(-1));
+		if (i == 0) amt = event.params.value.times(BigInt.fromI32(-1));
 
-		if (actor === null) {
+		if (actor == null) {
 			const user = loadOrCreateUser(id);
 
 			const transfers = user.transfers;
 			transfers.push(transfer.id);
 			user.transfers = transfers;
 
-			if (i === 0) transfer.sendUser = user.id;
-			else transfer.recipUser = user.id;
+			if (i == 0) {
+				transfer.sendUser = user.id;
+			} else {
+				transfer.recipUser = user.id;
+			}
 
 			changeInvestorProfile(user, token.toHexString(), amt);
 			user.save();
@@ -338,8 +344,11 @@ export function handleTransfer(event: TransferEvent): void {
 		transfers.push(transfer.id);
 		actor.transfers = transfers;
 
-		if (i === 0) transfer.sendDao = actor.id;
-		else transfer.recipDao = actor.id;
+		if (i == 0) {
+			transfer.sendDao = actor.id;
+		} else {
+			transfer.recipDao = actor.id;
+		}
 
 		actor.save();
 
