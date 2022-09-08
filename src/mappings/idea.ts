@@ -24,7 +24,7 @@ import {
 	makeTreasuryID,
 } from "../utils";
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
-import { log } from "@graphprotocol/graph-ts";
+import { log, Address } from "@graphprotocol/graph-ts";
 
 export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	// Acting on the Idea that is governing, if the event is emitted
@@ -127,7 +127,8 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 		}
 	}
 
-	if (propI != -1 && propI < gov.activeProps.length) gov.activeProps.splice(propI, 1);
+	if (propI != -1 && propI < gov.activeProps.length)
+		gov.activeProps.splice(propI, 1);
 
 	const accepted = gov.acceptedProps;
 	accepted.push(prop.id);
@@ -193,7 +194,8 @@ export function handleProposalRejected(event: ProposalRejected): void {
 		if (gov.activeProps[i] == event.params.prop.toHexString()) propI = i;
 	}
 
-	if (propI != -1 && propI < gov.activeProps.length) gov.activeProps.splice(propI, 1);
+	if (propI != -1 && propI < gov.activeProps.length)
+		gov.activeProps.splice(propI, 1);
 
 	const rejected = gov.rejectedProps;
 	rejected.push(prop.id);
@@ -356,4 +358,14 @@ export function handleTransfer(event: TransferEvent): void {
 	}
 
 	transfer.save();
+
+	// Update the supply of the token if the sender is 0x0
+	if (event.params.from !== Address.empty()) return;
+
+	// If the token being used is also a DAO, update its supply record
+	const tDao = Idea.load(token.toHexString());
+	if (tDao === null) return;
+
+	tDao.supply = tDao.supply.plus(event.params.value);
+	tDao.save();
 }
