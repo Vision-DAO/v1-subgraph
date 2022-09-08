@@ -160,6 +160,7 @@ export const loadOrCreateVote = (
 	const profVotes = vProfile.votes;
 	profVotes.push(v.id);
 	vProfile.votes = profVotes;
+	v.voter = vProfile.id;
 
 	profile.save();
 	vProfile.save();

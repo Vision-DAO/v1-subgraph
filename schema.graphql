@@ -132,6 +132,9 @@ type Vote @entity {
   "The proposal being voted on"
   prop: Prop!
 
+  "The user casting the vote"
+  voter: VoterProfile!
+
   "When the vote was cast"
   createdAt: BigInt!
 }
