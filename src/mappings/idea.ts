@@ -41,12 +41,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	if (propContract == null) return;
 
 	// Extract initial details of the funding in a readable format
-	const rate = new FundingRate(
-		makeFRID(
-			event.transaction.from.toHexString(),
-			propContract.toFund().toHexString()
-		)
-	);
+	const rate = new FundingRate(event.transaction.hash.toHexString());
 
 	const rateContract = propContract.finalFundsRate();
 	rate.token = rateContract.token.toHexString();
@@ -58,6 +53,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 
 	// Idea is a factory
 	const prop = new Prop(event.params.prop.toHexString());
+	rate.prop = prop.id;
 	prop.funder = gov.id;
 	prop.toFund = propContract.toFund().toHexString();
 	prop.rate = rate.id;
@@ -141,7 +137,7 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 		oldRate = new FundingRate(makeFRID(prop.funder, prop.toFund));
 
 		const children = gov.children;
-		children.push(oldRate.id);
+		children.push(prop.id);
 		gov.children = children;
 
 		const recipient = Idea.load(daoAddr.toHexString());
@@ -157,6 +153,7 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 		}
 	}
 
+	oldRate.prop = prop.id;
 	oldRate.token = rate.token;
 	oldRate.value = rate.value;
 	oldRate.intervalLength = rate.intervalLength;
@@ -257,8 +254,6 @@ const changeInvestorProfile = (
 				if (users[i] == investor.id) break;
 
 			if (uIdx != -1 && uIdx < users.length) users.splice(uIdx, 1);
-
-			log.info("tres", []);
 		}
 
 		dao.users = users;
@@ -360,7 +355,7 @@ export function handleTransfer(event: TransferEvent): void {
 	transfer.save();
 
 	// Update the supply of the token if the sender is 0x0
-	if (event.params.from !== Address.empty()) return;
+	if (!event.params.from.equals(Address.zero())) return;
 
 	// If the token being used is also a DAO, update its supply record
 	const tDao = Idea.load(token.toHexString());

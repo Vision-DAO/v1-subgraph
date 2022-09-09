@@ -149,6 +149,8 @@ enum FundingType {
 type FundingRate @entity {
   id: ID!
 
+  prop: ID!
+
   "The ERC-20 token used to fund the project"
   token: String!
 
