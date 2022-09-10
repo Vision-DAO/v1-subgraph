@@ -3,6 +3,7 @@ import { Idea as IdeaSrc } from "../generated/templates";
 import { Idea as IdeaContract } from "../generated/templates/Idea/Idea";
 import { Registry, Idea } from "../generated/schema";
 import { loadOrCreateUser } from "../utils";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 /**
  * Called when the registry gets created
@@ -54,7 +55,7 @@ export function handleIdeaCreated(event: IdeaCreated): void {
 	idea.ipfsAddr = deployed.ipfsAddr();
 	idea.ticker = deployed.symbol();
 	idea.name = deployed.name();
-	idea.supply = deployed.totalSupply();
+	idea.supply = BigInt.zero();
 
 	// Save the object in the db
 	idea.save();
