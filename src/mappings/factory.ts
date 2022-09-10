@@ -2,6 +2,7 @@ import { FactoryCreated, IdeaCreated } from "../generated/Factory/Factory";
 import { Idea as IdeaSrc } from "../generated/templates";
 import { Idea as IdeaContract } from "../generated/templates/Idea/Idea";
 import { Registry, Idea } from "../generated/schema";
+import { loadOrCreateUser } from "../utils";
 
 /**
  * Called when the registry gets created
@@ -33,7 +34,11 @@ export function handleIdeaCreated(event: IdeaCreated): void {
 	ideas.push(idea.id);
 	reg.ideas = ideas;
 
+	const author = loadOrCreateUser(event.transaction.from.toHexString());
+	author.save();
+
 	// No activity yet
+	idea.author = author.id;
 	idea.children = [];
 	idea.activeProps = [];
 	idea.acceptedProps = [];

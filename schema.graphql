@@ -17,6 +17,9 @@ type Idea @entity {
   id: ID!
   ipfsAddr: String!
 
+  "The address of the user creating the idea."
+  author: User!
+
   "Contract details from construction"
   ticker: String!
   name: String!
