@@ -10,7 +10,7 @@ dataSources:
     name: Factory
     network: mumbai
     source:
-      address: "0x1b7f67a2ab2d5121f48935740565191cee3f14cc"
+      address: "0xD0cc4B7df0D69cfFCC000F0365F766d2c0E32648"
       abi: Factory
       startBlock: 27950234
     mapping:
