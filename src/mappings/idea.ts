@@ -22,9 +22,10 @@ import {
 	loadOrCreateProfile,
 	makeFRID,
 	makeTreasuryID,
+	makeIdUD,
 } from "../utils";
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
-import { log, Address } from "@graphprotocol/graph-ts";
+import { log, Address, store } from "@graphprotocol/graph-ts";
 
 export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	// Acting on the Idea that is governing, if the event is emitted
@@ -239,6 +240,9 @@ const changeInvestorProfile = (
 	// This is literally impossible
 	if (iProf == null) return;
 
+	// Calculate if the user needs to be re-added
+	const oldBalance = iProf.balance;
+
 	iProf.balance = iProf.balance.plus(amount);
 
 	// Add or remove the user as a DAO member
@@ -248,12 +252,21 @@ const changeInvestorProfile = (
 		const users = dao.users;
 
 		if (iProf.balance.equals(BigInt.zero())) {
+			// Remove the user's investor profile
+			store.remove(
+				"InvestorProfile",
+				makeIdUD("investor", investor.id, dao.id)
+			);
+
+			// Remove them from the list of members
 			let uIdx = -1;
 
 			for (let i = 0; i < users.length; i++, uIdx++)
 				if (users[i] == investor.id) break;
 
 			if (uIdx != -1 && uIdx < users.length) users.splice(uIdx, 1);
+		} else if (oldBalance.equals(BigInt.zero())) {
+			users.push(prof.id);
 		}
 
 		dao.users = users;
