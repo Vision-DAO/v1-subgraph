@@ -134,10 +134,6 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 	if (oldRate == null) {
 		oldRate = new FundingRate(makeFRID(prop.funder, prop.toFund));
 
-		const children = gov.children;
-		children.push(prop.id);
-		gov.children = children;
-
 		const recipient = Idea.load(daoAddr.toHexString());
 
 		// Update the funders of the Idea receiving funds, if there is one (could be
@@ -149,7 +145,26 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 
 			recipient.save();
 		}
+	} else {
+		let childIdx = -1;
+
+		for (let i = 0; i < gov.children.length; i++) {
+			const propId = gov.children[i];
+			const childProp = Prop.load(propId);
+
+			if (childProp != null && childProp.rate == oldRate.id) {
+				childIdx = i;
+
+				break;
+			}
+		}
+
+		gov.children.splice(childIdx, 1);
 	}
+
+	const children = gov.children;
+	children.push(prop.id);
+	gov.children = children;
 
 	prop.rate = oldRate.id;
 	oldRate.prop = prop.id;
