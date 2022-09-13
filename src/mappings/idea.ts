@@ -47,9 +47,7 @@ export function handleProposalSubmitted(event: ProposalSubmitted): void {
 	const rateContract = propContract.finalFundsRate();
 	rate.token = rateContract.token.toHexString();
 	rate.value = rateContract.value;
-	rate.intervalLength = rateContract.intervalLength;
-	rate.expiry = rateContract.expiry;
-	rate.lastClaimed = rateContract.lastClaimed;
+	rate.spent = false;
 	rate.kind = ["Treasury", "Mint"][rateContract.kind];
 
 	// Idea is a factory
@@ -111,7 +109,6 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 	// Mark the proposal as accepted
 	prop.status = "Accepted";
 	prop.finalizedAt = event.block.timestamp;
-	rate.lastClaimed = event.block.timestamp;
 	let propI = -1;
 
 	for (let i = 0; i < gov.activeProps.length; i++) {
@@ -157,10 +154,8 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 	oldRate.prop = prop.id;
 	oldRate.token = rate.token;
 	oldRate.value = rate.value;
-	oldRate.intervalLength = rate.intervalLength;
-	oldRate.expiry = rate.expiry;
-	oldRate.lastClaimed = rate.lastClaimed;
 	oldRate.kind = rate.kind;
+	oldRate.spent = rate.spent;
 
 	gov.save();
 	rate.save();
@@ -216,7 +211,8 @@ export function handleFundingDispersed(event: FundingDispersed): void {
 	);
 	if (rate == null) return;
 
-	rate.lastClaimed = event.block.timestamp;
+	rate.spent = true;
+
 	rate.save();
 }
 

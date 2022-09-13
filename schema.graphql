@@ -151,7 +151,6 @@ enum FundingType {
 "A designation of the kind of funding a project receives"
 type FundingRate @entity {
   id: ID!
-
   prop: ID!
 
   "The ERC-20 token used to fund the project"
@@ -160,14 +159,8 @@ type FundingRate @entity {
   "The number of tokens to send in total"
   value: BigInt!
 
-  "How oftne tokens should be sent"
-  intervalLength: BigInt!
-
-  "Timestamp for when the funding dries up"
-  expiry: BigInt!
-
-  "When the funding was last used"
-  lastClaimed: BigInt!
+  "Whether or not the funding has been taken out"
+  spent: Boolean!
 
   "Whether tokens are sent or minted"
   kind: FundingType

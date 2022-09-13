@@ -10,7 +10,7 @@ dataSources:
     name: Factory
     network: mumbai
     source:
-      address: "0xD0cc4B7df0D69cfFCC000F0365F766d2c0E32648"
+      address: "0x1612b47F78B98F1Beb1794Ffa9f3EB45877D3D7E"
       abi: Factory
       startBlock: 27950234
     mapping:
@@ -62,11 +62,11 @@ templates:
         - event: ProposalSubmitted(address)
           handler: handleProposalSubmitted
           receipt: true
-        - event: IdeaFunded(address,address,(address,uint256,uint256,uint256,uint256,uint8))
+        - event: IdeaFunded(address,address,(address,uint256,bool,uint8))
           handler: handleIdeaFunded
         - event: ProposalRejected(address)
           handler: handleProposalRejected
-        - event: FundingDispersed(address,(address,uint256,uint256,uint256,uint256,uint8))
+        - event: FundingDispersed(address,(address,uint256,bool,uint8))
           handler: handleFundingDispersed
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer

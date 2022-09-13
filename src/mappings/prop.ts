@@ -23,9 +23,6 @@ export function handleVote(event: VoteCast): void {
 	if (rate == null) return;
 
 	rate.value = newRate.value;
-	rate.intervalLength = newRate.intervalLength;
-	rate.expiry = newRate.expiry;
-	rate.lastClaimed = newRate.lastClaimed;
 	rate.save();
 
 	// Save a record of the user's submitted vote (or alter an existing one)
