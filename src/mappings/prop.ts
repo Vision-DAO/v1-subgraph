@@ -2,6 +2,7 @@ import { Prop, FundingRate, User } from "../generated/schema";
 import { VoteCast } from "../generated/templates/Proposal/Proposal";
 import { Proposal as PropContract } from "../generated/templates/Proposal/Proposal";
 import { loadOrCreateVote } from "../utils";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 /**
  * Called when a user submits a vote to a proposal.
@@ -30,7 +31,17 @@ export function handleVote(event: VoteCast): void {
 	if (voter == null) return;
 
 	const vote = loadOrCreateVote(event.block.timestamp, voter, prop);
-	vote.votes = vote.votes.plus(event.params.votes);
+
+	// Remove previous votes if the user had cast any
+	if (!vote.votes.equals(BigInt.zero())) {
+		if (vote.kind == "For") {
+			prop.votesFor = prop.votesFor.minus(vote.votes);
+		} else {
+			prop.votesAgainst = prop.votesAgainst.minus(vote.votes);
+		}
+	}
+
+	vote.votes = event.params.votes;
 	vote.kind = ["For", "Against"][event.params.kind];
 
 	if (event.params.kind == 0)
