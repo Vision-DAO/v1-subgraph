@@ -151,6 +151,7 @@ export function handleIdeaFunded(event: IdeaFunded): void {
 		}
 	}
 
+	prop.rate = oldRate.id;
 	oldRate.prop = prop.id;
 	oldRate.token = rate.token;
 	oldRate.value = rate.value;
