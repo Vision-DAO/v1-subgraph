@@ -302,10 +302,16 @@ const changeTreasury = (dao: Idea, token: string, amount: BigInt): void => {
 		treasury = new TreasuryBalance(id);
 		treasury.token = token;
 		treasury.holder = dao.id;
+		treasury.balance = BigInt.zero();
+
+		const treasuries = dao.treasury;
+		treasuries.push(treasury.id);
+		dao.treasury = treasuries;
 	}
 
 	treasury.balance = treasury.balance.plus(amount);
 	treasury.save();
+	dao.save();
 };
 
 /**
@@ -355,6 +361,7 @@ export function handleTransfer(event: TransferEvent): void {
 			}
 
 			changeInvestorProfile(user, token.toHexString(), amt);
+
 			user.save();
 
 			continue;
